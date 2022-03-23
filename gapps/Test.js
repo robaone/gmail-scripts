@@ -1,8 +1,20 @@
-function Test(testClass) {
-  this.tests = testClass;
-  this.run = function(){
-    var keys = Object.keys(this.tests);
-    keys.forEach(k => k.startsWith('test_') ? this.tests[k]() : null);
+class Test {
+  constructor(testClass) {
+    this.tests=testClass;
+  }
+  run() {
+    const testingClass = this.tests;
+    var methods=this.getAllMethodNames(testingClass).filter(method => method.startsWith('test_'));
+    methods.forEach(method => testingClass[method]());
+  }
+
+  getAllMethodNames(obj) {
+    const methods = new Set();
+    while(obj = Reflect.getPrototypeOf(obj)) {
+      const keys = Reflect.ownKeys(obj);
+      keys.forEach(k => methods.add(k));
+    }
+    return [...methods];
   }
 };
 
