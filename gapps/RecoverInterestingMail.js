@@ -13,7 +13,14 @@ class RecoverInterestingMail {
   }
   
   buildQuery(search_string,properties) {
-    return search_string;
+    const queryArray = new Array();
+    queryArray.push(search_string);
+    ["after","before","label"].forEach(propertyName => {
+      if(properties && properties[propertyName]) {
+        queryArray.push(`${propertyName}:${properties[propertyName]}`);
+      }
+    });
+    return queryArray.join(' ');
   }
 
 }
@@ -67,6 +74,10 @@ class RecoverInterestingMailTest {
       {
         properties: {
         },
+        query: 'test'
+      },
+      {
+        properties: undefined,
         query: 'test'
       }
     ];
