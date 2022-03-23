@@ -4,8 +4,13 @@ class Test {
   }
   run() {
     const testingClass = this.tests;
-    var methods=this.getAllMethodNames(testingClass).filter(method => method.startsWith('test_'));
-    methods.forEach(method => testingClass[method]());
+    var methods=this.getAllMethodNames(testingClass).filter(method => method.startsWith('test_') || method === 'before');
+    methods.filter(method => method.startsWith('test_')).forEach(method => {
+      if( methods.includes('before') ) {
+        testingClass.before();
+      }
+      testingClass[method]()
+    });
   }
 
   getAllMethodNames(obj) {
