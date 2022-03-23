@@ -2,6 +2,7 @@ class RecoverInterestingMail {
   constructor(gmailApp, properties){
     this.BATCH_LIMIT = properties?.limit ?? 100;
     this.gmailApp = gmailApp;
+    this.searches = properties?.searches ?? [];
   }
 
   run() {
@@ -26,12 +27,7 @@ class RecoverInterestingMail {
   }
 
   getSearches() {
-    return [
-      {
-        search_string: 'test',
-        search_properties: undefined
-      }
-    ]
+    return this.searches;
   }
   
   buildQuery(search_string,properties) {
@@ -53,7 +49,15 @@ class RecoverInterestingMailTest {
   }
   before() {
     this.gmailApp = {};
-    this.service = new RecoverInterestingMail(this.gmailApp, { limit: 99 });
+    this.service = new RecoverInterestingMail(this.gmailApp, { 
+      limit: 99, 
+      searches: [
+        {
+          search_string: 'test',
+          search_properties: undefined
+        }
+      ] 
+    });
   }
   test_run() {
     const calls = { moveToInbox: 0};
