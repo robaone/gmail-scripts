@@ -10,10 +10,16 @@ class RecoverInterestingMail {
     searches.forEach(search =>{
       const {search_string, search_properties} = search;
       const threads = this.mailSearch(search_string, search_properties);
+      threads.forEach(thread => thread.moveToInbox());
       recovered[0] = recovered[0] ? recovered[0] + threads.length : threads.length;
     });
     return recovered[0];
   }
+
+  recoverEmail(thread) {
+    thread.moveToInbox();
+  }
+
   mailSearch(search_string, properties) {
     const threads = this.gmailApp.search(this.buildQuery(search_string,properties), 0, properties?.limit ?? this.BATCH_LIMIT);
     return threads;
@@ -50,14 +56,24 @@ class RecoverInterestingMailTest {
     this.service = new RecoverInterestingMail(this.gmailApp, { limit: 99 });
   }
   test_run() {
+    const calls = { moveToInbox: 0};
     // GIVEN
-    this.gmailApp.search = (_) => new Array(1);
+    this.gmailApp.search = (_) => {
+      const results = new Array(1);
+      results.fill({
+        moveToInbox: function () {
+          console.log('moveToInbox()');
+          calls.moveToInbox++;
+        }
+      })
+      return results;
+    };
     // WHEN
     const result = this.service.run();
 
     // THEN
     console.log(result);
-    Assert(result).equals(1);
+    Assert(calls.moveToInbox).equals(1);
   }
   test_buildQuery() {
     // GIVEN
