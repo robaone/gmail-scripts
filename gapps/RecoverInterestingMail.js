@@ -26,7 +26,61 @@ class RecoverInterestingMailTest {
     this.gmailApp = {};
     this.service = new RecoverInterestingMail(this.gmailApp, { limit: 99 });
   }
+  test_buildQuery() {
+    // GIVEN
+    const scenarios = [
+      {
+        properties: {
+          after: '2022-01-01',
+          before: '2022-03-01',
+          label: "unread"
+        },
+        query: 'test after:2022-01-01 before:2022-03-01 label:unread'
+      },
+      {
+        properties: {
+          after: '2022-01-01',
+          label: "unread"
+        },
+        query: 'test after:2022-01-01 label:unread'
+      },
+      {
+        properties: {
+          before: '2022-03-01',
+          label: "unread"
+        },
+        query: 'test before:2022-03-01 label:unread'
+      },
+      {
+        properties: {
+          label: "unread"
+        },
+        query: 'test label:unread'
+      },
+      {
+        properties: {
+          after: '2022-01-01',
+          before: '2022-03-01'
+        },
+        query: 'test after:2022-01-01 before:2022-03-01'
+      },
+      {
+        properties: {
+        },
+        query: 'test'
+      }
+    ];
 
+    scenarios.forEach(scenario => {
+      // WHEN
+      const query = this.service.buildQuery('test',scenario.properties);
+
+      // THEN
+      Assert(query).equals(scenario.query);
+    })
+    
+
+  }
   test_mailSearchWithoutLimit() {
     // GIVEN
     this.gmailApp.search = (_) => new Array(99);
