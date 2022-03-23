@@ -1,15 +1,27 @@
-const BATCH_LIMIT = 100;
+class RecoverInterestingMail {
+  constructor(properties){
+    this.BATCH_LIMIT = 100;
+  }
 
-function mailSearch(search_string, properties) {
-  const threads = GmailApp.search(buildQuery(search_string,properties), 0, properties.limit ?? BATCH_LIMIT);
-  return threads;
-}
+  mailSearch(search_string, properties) {
+    const threads = GmailApp.search(this.buildQuery(search_string,properties), 0, properties.limit ?? this.BATCH_LIMIT);
+    return threads;
+  }
+  
+  buildQuery(search_string,properties) {
+    return search_string;
+  }
 
-function buildQuery(search_string,properties) {
-  return search_string;
 }
 
 class RecoverInterestingMailTest {
+  constructor() {
+    
+  }
+  before() {
+    this.service = new RecoverInterestingMail();
+  }
+
   test_mailSearchWithoutLimit() {
     // GIVEN
     const search_string = 'test';
@@ -20,7 +32,7 @@ class RecoverInterestingMailTest {
     };
 
     // WHEN
-    const result = mailSearch(search_string,properties);
+    const result = this.service.mailSearch(search_string,properties);
 
     // THEN
     console.log(result.length);
@@ -37,7 +49,7 @@ class RecoverInterestingMailTest {
     };
 
     // WHEN
-    const result = mailSearch(search_string,properties);
+    const result = this.service.mailSearch(search_string,properties);
 
     // THEN
     console.log(result.length);
